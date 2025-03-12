@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Security Meta Tags -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https:;">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
+    <title>Book a Driver - TopDriverService</title>
+    <!-- Preload critical resources -->
+    <link rel="preload" href="css/style.css" as="style">
+    <link rel="preload" href="css/booking.css" as="style">
+    <link rel="preload" href="js/main.js" as="script">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/booking.css">
+    <link rel="stylesheet" href="css/notifications.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
+    <script src="js/main.js" defer></script>
+</head>
+<body class="booking-page">
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-container">
+                    <img src="assets/images/logo.png" alt="TopDriverService Logo" class="nav-logo">
+                </div>
+                <a href="index.html" class="brand-name">Top<span>Driver</span>Service</a>
+            </div>
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-menu-toggle" aria-label="Toggle Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-list">
+                <li><a class="nav-link" href="index.html">Home</a></li>
+                <li><a class="nav-link" href="index.html#services">Services</a></li>
+                <li><a class="nav-link" href="index.html#pricing">Pricing</a></li>
+                <li><a class="nav-link" href="index.html#about">About</a></li>
+                <li><a class="nav-link" href="index.html#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="booking-hero">
+        <div class="container">
+            <h1 class="booking-title" data-aos="fade-up">Book Your Professional Driver</h1>
+            <p class="booking-subtitle" data-aos="fade-up" data-aos-delay="100">Experience safe and reliable transportation with our expert drivers</p>
+        </div>
+    </div>
+
+    <div class="booking-wrapper">
+        <div class="container">
+            <div class="booking-grid">
+                <!-- Left Column: Booking Form -->
+                <div class="booking-form-container" data-aos="fade-right">
+                    <div class="form-card">
+                        <h2 class="form-title"><i class="fas fa-user-circle"></i> Personal Details</h2>
+                        <form id="bookingForm">
+                            <div class="form-group">
+                                <label for="name"><i class="fas fa-user"></i> Full Name</label>
+                                <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="phone"><i class="fas fa-phone"></i> Phone Number</label>
+                                    <input type="tel" id="phone" name="phone" placeholder="Your phone number" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                                    <input type="email" id="email" name="email" placeholder="Your email address" required>
+                                </div>
+                            </div>
+
+                            <h2 class="form-title mt-4"><i class="fas fa-clock"></i> Service Details</h2>
+                            <div class="form-group">
+                                <label for="serviceType"><i class="fas fa-car"></i> Service Type</label>
+                                <select id="serviceType" name="serviceType" required>
+                                    <option value="">Select a service type</option>
+                                    <option value="morning">Morning Service (8 hours)</option>
+                                    <option value="afternoon">Afternoon Service (5 hours)</option>
+                                    <option value="hourly">Hourly Service</option>
+                                    <option value="night">Night Service (2 hours)</option>
+                                    <option value="tour">Tour Service (12 hours)</option>
+                                    <option value="night_stay">Night Stay Service</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="hours"><i class="fas fa-hourglass-half"></i> Hours Required</label>
+                                <input type="number" id="hours" name="hours" min="1" max="24" step="1" placeholder="Enter number of hours" required>
+                            </div>
+
+                            <div class="fare-estimate fade-in">
+                                <div class="fare-card">
+                                    <h3><i class="fas fa-tag"></i> Estimated Fare</h3>
+                                    <span id="fareEstimate">₹0.00</span>
+                                    <p id="rateDetails" class="fare-note"></p>
+                                    <p class="fare-note">* Final fare may vary based on actual duration</p>
+                                </div>
+                            </div>
+
+                            <h2 class="form-title mt-4"><i class="fas fa-map-marker-alt"></i> Schedule & Location</h2>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="bookingDate"><i class="fas fa-calendar"></i> Date</label>
+                                    <input type="date" id="bookingDate" name="bookingDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bookingTime"><i class="fas fa-clock"></i> Time</label>
+                                    <input type="time" id="bookingTime" name="bookingTime" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="location"><i class="fas fa-map-marker-alt"></i> Pickup Location</label>
+                                <div class="location-input-group">
+                                    <input type="text" id="location" name="location" placeholder="Enter your pickup location" required>
+                                    <button type="button" id="getLocation" class="btn btn-secondary">
+                                        <i class="fas fa-crosshairs"></i> Use Current Location
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="availabilityResult" class="availability-result"></div>
+                            <div id="nearbyDrivers" class="nearby-drivers-container"></div>
+
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <i class="fas fa-check-circle"></i> Confirm Booking
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Right Column: Additional Info -->
+                <div class="booking-info-container" data-aos="fade-left">
+                    <!-- Testimonials Card -->
+                    <div class="info-card testimonials-card">
+                        <h3><i class="fas fa-star"></i> Customer Reviews</h3>
+                        <div class="testimonials-slider">
+                            <div class="testimonial fade-in">
+                                <div class="testimonial-rating">★★★★★</div>
+                                <p>"Excellent service! The driver was punctual and very professional. Will definitely use again."</p>
+                                <div class="testimonial-author">
+                                    <img src="assets/images/avatar1.jpg" alt="Rahul Sharma" class="author-avatar">
+                                    <h4>Rahul Sharma</h4>
+                                </div>
+                            </div>
+                            <div class="testimonial fade-in">
+                                <div class="testimonial-rating">★★★★★</div>
+                                <p>"Great experience! Driver was courteous and knew all the routes. Highly recommended!"</p>
+                                <div class="testimonial-author">
+                                    <img src="assets/images/avatar2.jpg" alt="Priya Patel" class="author-avatar">
+                                    <h4>Priya Patel</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Contact Card -->
+                    <div class="info-card contact-card">
+                        <h3><i class="fas fa-headset"></i> Need Help?</h3>
+                        <p>Our support team is available 24/7 to assist you</p>
+                        <div class="quick-contact-list">
+                            <a href="tel:+919555647312" class="contact-item">
+                                <i class="fas fa-phone"></i> +91 95556 47312
+                            </a>
+                            <a href="mailto:support@topdriverservice.in" class="contact-item">
+                                <i class="fas fa-envelope"></i> support@topdriverservice.in
+                            </a>
+                            <a href="#" class="contact-item">
+                                <i class="fas fa-comments"></i> Live Chat
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Booking Tips Card -->
+                    <div class="info-card">
+                        <h3><i class="fas fa-lightbulb"></i> Booking Tips</h3>
+                        <ul class="quick-contact-list">
+                            <li class="contact-item">
+                                <i class="fas fa-clock"></i> Book at least 2 hours in advance
+                            </li>
+                            <li class="contact-item">
+                                <i class="fas fa-map-marked-alt"></i> Provide accurate pickup location
+                            </li>
+                            <li class="contact-item">
+                                <i class="fas fa-phone-alt"></i> Keep your phone handy
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="booking-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="about-us">
+                    <h3>About TopDriverService</h3>
+                    <p>Your trusted partner for professional driver services in Delhi NCR. We provide reliable, safe, and professional driving services for all your needs.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        window.onload = () => {
+            AOS.init({
+                duration: 800,
+                easing: 'ease-out-cubic',
+                once: true,
+                offset: 50,
+                delay: 0,
+                mirror: false,
+                anchorPlacement: 'top-bottom',
+                disable: 'mobile'
+            });
+        }
+    </script>
+</body>
+</html> 

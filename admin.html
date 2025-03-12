@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TopDriverService - Admin Panel</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .admin-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1;
+        }
+        .admin-header::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+        .admin-header h1 {
+            font-size: 1.75rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .admin-header h1 i {
+            font-size: 1.5rem;
+            color: rgba(255,255,255,0.9);
+        }
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        .bookings-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        .bookings-table th, .bookings-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        .bookings-table th {
+            background: var(--primary-color);
+            color: white;
+            white-space: nowrap;
+        }
+        .bookings-table tr:hover {
+            background: #f5f5f5;
+        }
+        .filters-section {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+            align-items: center;
+        }
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .filter-group label {
+            font-weight: 500;
+        }
+        select, input {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        .refresh-btn {
+            padding: 0.5rem 1rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .refresh-btn:hover {
+            background: var(--accent);
+        }
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status-confirmed {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-completed {
+            background: #cce5ff;
+            color: #004085;
+        }
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .fare-amount {
+            font-family: monospace;
+            font-weight: 500;
+        }
+        .action-btn {
+            padding: 0.25rem 0.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin: 0.25rem;
+        }
+        .edit-btn {
+            background: #e7f3ff;
+            color: #0066cc;
+        }
+        .delete-btn {
+            background: #ffe7e7;
+            color: #cc0000;
+        }
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .summary-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .summary-card h3 {
+            margin: 0;
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+        .summary-card p {
+            margin: 0.5rem 0 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        @media (max-width: 768px) {
+            .bookings-table {
+                display: block;
+                overflow-x: auto;
+            }
+            .filters-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .admin-header {
+                padding: 1rem;
+            }
+            .admin-header h1 {
+                font-size: 1.5rem;
+            }
+            .nav-list {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                padding: 1rem;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                flex-direction: column;
+            }
+            .nav-list.active {
+                display: flex;
+            }
+            .nav-list li {
+                margin: 0.5rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-container">
+                    <img src="assets/images/logo.png" alt="TopDriverService Logo" class="nav-logo">
+                </div>
+                <a href="index.html" class="brand-name">Top<span>Driver</span>Service</a>
+            </div>
+            <ul class="nav-list">
+                <li><a class="nav-link" href="index.html">Dashboard</a></li>
+                <li><a class="nav-link" href="#bookings">Bookings</a></li>
+                <li><a class="nav-link" href="#drivers">Drivers</a></li>
+                <li><a class="nav-link" href="#settings">Settings</a></li>
+                <li><a class="nav-link" href="index.html">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="admin-header">
+        <div class="admin-container">
+            <h1><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h1>
+        </div>
+    </div>
+
+    <div class="admin-container">
+        <div class="summary-cards">
+            <div class="summary-card">
+                <h3><i class="fas fa-calendar-check"></i> Today's Bookings</h3>
+                <p id="todayBookings">0</p>
+            </div>
+            <div class="summary-card">
+                <h3><i class="fas fa-clock"></i> Pending</h3>
+                <p id="pendingCount">0</p>
+            </div>
+            <div class="summary-card">
+                <h3><i class="fas fa-check-circle"></i> Completed</h3>
+                <p id="completedCount">0</p>
+            </div>
+            <div class="summary-card">
+                <h3><i ></i> Today's Revenue (₹)</h3>
+                <p id="todayRevenue">₹0.00</p>
+            </div>
+        </div>
+
+        <div class="filters-section">
+            <div class="filter-group">
+                <label for="serviceFilter"><i class="fas fa-filter"></i> Service:</label>
+                <select id="serviceFilter">
+                    <option value="all">All Services</option>
+                    <option value="morning">Morning Service</option>
+                    <option value="afternoon">Afternoon Service</option>
+                    <option value="hourly">Hourly Service</option>
+                    <option value="night">Night Service</option>
+                    <option value="tour">Tour Service</option>
+                    <option value="night_stay">Night Stay Service</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="statusFilter"><i class="fas fa-tasks"></i> Status:</label>
+                <select id="statusFilter">
+                    <option value="all">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="dateFilter"><i class="fas fa-calendar"></i> Date:</label>
+                <input type="date" id="dateFilter">
+            </div>
+            <button class="refresh-btn" onclick="loadBookings()">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+
+        <div class="table-responsive">
+            <table class="bookings-table">
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Date & Time</th>
+                        <th>Customer Name</th>
+                        <th>Service Type</th>
+                        <th>Hours</th>
+                        <th>Fare</th>
+                        <th>Phone</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="bookingsTableBody">
+                    <!-- Bookings will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function getStatusBadgeClass(status) {
+            const statusClasses = {
+                'pending': 'status-pending',
+                'confirmed': 'status-confirmed',
+                'completed': 'status-completed',
+                'cancelled': 'status-cancelled'
+            };
+            return statusClasses[status] || 'status-pending';
+        }
+
+        function formatCurrency(amount) {
+            return `₹${parseFloat(amount).toFixed(2)}`;
+        }
+
+        function updateSummaryCards(bookings) {
+            const today = new Date().toLocaleDateString();
+            const todayBookings = bookings.filter(b => new Date(b.timestamp).toLocaleDateString() === today);
+            
+            document.getElementById('todayBookings').textContent = todayBookings.length;
+            document.getElementById('pendingCount').textContent = bookings.filter(b => b.status === 'pending').length;
+            document.getElementById('completedCount').textContent = bookings.filter(b => b.status === 'completed').length;
+            
+            const todayRevenue = todayBookings.reduce((sum, booking) => {
+                const fare = parseFloat(booking.estimatedFare.replace(/[₹,]/g, '')) || 0;
+                return sum + fare;
+            }, 0);
+            document.getElementById('todayRevenue').textContent = formatCurrency(todayRevenue);
+        }
+
+        async function loadBookings() {
+            try {
+                const response = await fetch('/api/bookings');
+                const bookings = await response.json();
+                
+                updateSummaryCards(bookings);
+                
+                const serviceFilter = document.getElementById('serviceFilter').value;
+                const statusFilter = document.getElementById('statusFilter').value;
+                const dateFilter = document.getElementById('dateFilter').value;
+                
+                const filteredBookings = bookings.filter(booking => {
+                    const matchesService = serviceFilter === 'all' || booking.service === serviceFilter;
+                    const matchesStatus = statusFilter === 'all' || booking.status === statusFilter;
+                    const matchesDate = !dateFilter || new Date(booking.timestamp).toLocaleDateString() === new Date(dateFilter).toLocaleDateString();
+                    return matchesService && matchesStatus && matchesDate;
+                });
+                
+                const tableBody = document.getElementById('bookingsTableBody');
+                tableBody.innerHTML = '';
+
+                filteredBookings
+                    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                    .forEach(booking => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${booking.id}</td>
+                            <td>${new Date(booking.timestamp).toLocaleString()}</td>
+                            <td>${booking.name}</td>
+                            <td>${booking.service}</td>
+                            <td>${booking.hours || '-'}</td>
+                            <td class="fare-amount">${formatCurrency(booking.estimatedFare.replace(/[₹,]/g, ''))}</td>
+                            <td>${booking.phone}</td>
+                            <td>${booking.location}</td>
+                            <td><span class="status-badge ${getStatusBadgeClass(booking.status)}">${booking.status || 'pending'}</span></td>
+                            <td>
+                                <button class="action-btn edit-btn" onclick="editBooking('${booking.id}')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-btn delete-btn" onclick="deleteBooking('${booking.id}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+                alert('Failed to load bookings. Please try again.');
+            }
+        }
+
+        async function editBooking(id) {
+            // Implement edit functionality
+            console.log('Edit booking:', id);
+        }
+
+        async function deleteBooking(id) {
+            if (confirm('Are you sure you want to delete this booking?')) {
+                try {
+                    const response = await fetch(`/api/bookings/${id}`, {
+                        method: 'DELETE'
+                    });
+                    if (response.ok) {
+                        loadBookings();
+                    } else {
+                        throw new Error('Failed to delete booking');
+                    }
+                } catch (error) {
+                    console.error('Error deleting booking:', error);
+                    alert('Failed to delete booking. Please try again.');
+                }
+            }
+        }
+
+        // Add event listeners for filters
+        document.getElementById('serviceFilter').addEventListener('change', loadBookings);
+        document.getElementById('statusFilter').addEventListener('change', loadBookings);
+        document.getElementById('dateFilter').addEventListener('change', loadBookings);
+
+        // Load bookings when page loads
+        document.addEventListener('DOMContentLoaded', loadBookings);
+
+        // Refresh bookings every 5 minutes
+        setInterval(loadBookings, 300000);
+    </script>
+</body>
+</html> 
