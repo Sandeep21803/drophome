@@ -6,6 +6,12 @@
     <title>TopDriverService - Admin Panel</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        // Check if user is authenticated
+        if (!localStorage.getItem('adminAuthenticated')) {
+            window.location.href = 'login.html';
+        }
+    </script>
     <style>
         .admin-header {
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
@@ -329,8 +335,36 @@
 
         async function loadBookings() {
             try {
-                const response = await fetch('/api/bookings');
-                const bookings = await response.json();
+                // Get bookings from localStorage or initialize with sample data
+                let bookings = JSON.parse(localStorage.getItem('bookings')) || [
+                    {
+                        id: "B001",
+                        timestamp: new Date().toISOString(),
+                        name: "John Doe",
+                        service: "morning",
+                        hours: "8",
+                        estimatedFare: "₹1000",
+                        phone: "+919555647312",
+                        location: "Delhi NCR",
+                        status: "pending"
+                    },
+                    {
+                        id: "B002",
+                        timestamp: new Date().toISOString(),
+                        name: "Jane Smith",
+                        service: "tour",
+                        hours: "12",
+                        estimatedFare: "₹1500",
+                        phone: "+919818546871",
+                        location: "Noida",
+                        status: "completed"
+                    }
+                ];
+
+                // Save sample data to localStorage if it doesn't exist
+                if (!localStorage.getItem('bookings')) {
+                    localStorage.setItem('bookings', JSON.stringify(bookings));
+                }
                 
                 updateSummaryCards(bookings);
                 
@@ -379,26 +413,35 @@
             }
         }
 
-        async function editBooking(id) {
-            // Implement edit functionality
-            console.log('Edit booking:', id);
-        }
-
         async function deleteBooking(id) {
             if (confirm('Are you sure you want to delete this booking?')) {
                 try {
-                    const response = await fetch(`/api/bookings/${id}`, {
-                        method: 'DELETE'
-                    });
-                    if (response.ok) {
-                        loadBookings();
-                    } else {
-                        throw new Error('Failed to delete booking');
-                    }
+                    let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+                    bookings = bookings.filter(booking => booking.id !== id);
+                    localStorage.setItem('bookings', JSON.stringify(bookings));
+                    loadBookings();
                 } catch (error) {
                     console.error('Error deleting booking:', error);
                     alert('Failed to delete booking. Please try again.');
                 }
+            }
+        }
+
+        async function editBooking(id) {
+            try {
+                const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+                const booking = bookings.find(b => b.id === id);
+                if (booking) {
+                    const newStatus = prompt('Enter new status (pending/confirmed/completed/cancelled):', booking.status);
+                    if (newStatus && ['pending', 'confirmed', 'completed', 'cancelled'].includes(newStatus.toLowerCase())) {
+                        booking.status = newStatus.toLowerCase();
+                        localStorage.setItem('bookings', JSON.stringify(bookings));
+                        loadBookings();
+                    }
+                }
+            } catch (error) {
+                console.error('Error editing booking:', error);
+                alert('Failed to edit booking. Please try again.');
             }
         }
 
@@ -412,6 +455,12 @@
 
         // Refresh bookings every 5 minutes
         setInterval(loadBookings, 300000);
+
+        // Add logout function
+        function logout() {
+            localStorage.removeItem('adminAuthenticated');
+            window.location.href = 'login.html';
+        }
     </script>
 </body>
 </html> 

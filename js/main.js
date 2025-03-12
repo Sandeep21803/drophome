@@ -294,20 +294,66 @@ function getUserLocation() {
         return;
     }
 
+    // Show loading state
+    const locationInput = document.getElementById('location');
+    const locationBtn = document.getElementById('getLocation');
+    if (locationBtn) {
+        locationBtn.disabled = true;
+        locationBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Getting location...';
+    }
+    if (locationInput) {
+        locationInput.placeholder = 'Fetching your location...';
+    }
+
     navigator.geolocation.getCurrentPosition(
         position => {
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
             
             if (Security.validateCoordinates(lat, lng)) {
-                showNearbyDrivers(lat, lng);
+                // Use Geocoding API to get address
+                fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const address = data.display_name;
+                        // Update location input
+                        if (locationInput) {
+                            locationInput.value = address;
+                        }
+                        // Show nearby drivers with address
+                        showNearbyDrivers(address);
+                        // Reset button
+                        if (locationBtn) {
+                            locationBtn.disabled = false;
+                            locationBtn.innerHTML = '<i class="fas fa-crosshairs"></i> Use Current Location';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error getting address:', error);
+                        showLocationError('Unable to get your address. Please enter it manually.');
+                        // Reset button
+                        if (locationBtn) {
+                            locationBtn.disabled = false;
+                            locationBtn.innerHTML = '<i class="fas fa-crosshairs"></i> Use Current Location';
+                        }
+                    });
             } else {
                 showLocationError('Invalid coordinates received');
+                // Reset button
+                if (locationBtn) {
+                    locationBtn.disabled = false;
+                    locationBtn.innerHTML = '<i class="fas fa-crosshairs"></i> Use Current Location';
+                }
             }
         },
         error => {
             console.error('Error getting location:', error);
             showLocationError('Unable to get your location. Please enter it manually.');
+            // Reset button
+            if (locationBtn) {
+                locationBtn.disabled = false;
+                locationBtn.innerHTML = '<i class="fas fa-crosshairs"></i> Use Current Location';
+            }
         },
         {
             enableHighAccuracy: true,
@@ -318,36 +364,133 @@ function getUserLocation() {
 }
 
 // Secure nearby drivers display
-function showNearbyDrivers(lat, lng) {
+function showNearbyDrivers(location) {
     const nearbyDiv = document.getElementById('nearbyDrivers');
     if (nearbyDiv) {
-        const sanitizedLat = Security.sanitizeInput(lat.toFixed(4));
-        const sanitizedLng = Security.sanitizeInput(lng.toFixed(4));
+        const sanitizedLocation = Security.sanitizeInput(location);
         
+        // Check if location contains Delhi NCR related terms
+        const delhiNcrTerms = [
+            'delhi', 'ncr', 'new delhi',
+            'gurgaon', 'gurugram', 
+            'noida', 'greater noida',
+            'ghaziabad', 'faridabad',
+            'igi airport', 'indira gandhi airport', 'terminal 3', 't3',
+            'dwarka', 'rohini', 'pitampura', 'janakpuri',
+            'connaught place', 'cp', 'karol bagh',
+            'saket', 'lajpat nagar', 'nehru place',
+            'cyber city', 'cyber hub',
+            'sector', 'golf course road',
+            'vaishali', 'indirapuram',
+            'crossing republik'
+        ];
+        
+        const isNearDelhiNcr = delhiNcrTerms.some(term => 
+            sanitizedLocation.toLowerCase().includes(term)
+        );
+        
+        if (!isNearDelhiNcr) {
+            nearbyDiv.innerHTML = `
+                <div class="nearby-drivers">
+                    <h3>No Drivers Available</h3>
+                    <p>Sorry, we currently operate only in Delhi NCR region. Please select a location within Delhi NCR.</p>
+                    <div class="location-suggestions">
+                        <p>Popular locations we serve:</p>
+                        <ul>
+                            <li>IGI Airport (Terminal 1, 2, 3)</li>
+                            <li>Connaught Place, New Delhi</li>
+                            <li>Cyber City, Gurugram</li>
+                            <li>Sector 18, Noida</li>
+                            <li>Vaishali, Ghaziabad</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
         nearbyDiv.innerHTML = `
             <div class="nearby-drivers">
-                <h3>Drivers in Your Area</h3>
-                <p>Showing available drivers near ${sanitizedLat}, ${sanitizedLng}</p>
+                <h3>Drivers in Delhi NCR</h3>
+                <p>Showing available drivers near ${sanitizedLocation}</p>
                 <div class="driver-list">
-                    ${generateMockDrivers()}
+                    ${generateMockDrivers(sanitizedLocation)}
                 </div>
             </div>
         `;
     }
 }
 
-function generateMockDrivers() {
-    const drivers = [
-        { name: 'Rajesh K.', rating: 4.8, experience: '5 years' },
-        { name: 'Amit S.', rating: 4.9, experience: '7 years' },
-        { name: 'Pradeep M.', rating: 4.7, experience: '4 years' }
+function generateMockDrivers(location = '') {
+    // Base drivers list
+    const allDrivers = [
+        { 
+            name: 'Rajesh K.', 
+            rating: 4.8, 
+            experience: '5 years',
+            location: 'South Delhi',
+            areas: ['igi airport', 'south delhi', 'saket'],
+            image: 'assets/images/profiles/driver1.jpg'
+        },
+        { 
+            name: 'Amit S.', 
+            rating: 4.9, 
+            experience: '7 years',
+            location: 'Noida Sector 62',
+            areas: ['noida', 'greater noida', 'ghaziabad'],
+            image: 'assets/images/profiles/driver2.jpg'
+        },
+        { 
+            name: 'Pradeep M.', 
+            rating: 4.7, 
+            experience: '4 years',
+            location: 'Gurugram Sector 45',
+            areas: ['gurugram', 'cyber city', 'dwarka'],
+            image: 'assets/images/profiles/driver3.jpg'
+        },
+        { 
+            name: 'Suresh R.', 
+            rating: 4.9, 
+            experience: '6 years',
+            location: 'IGI Airport',
+            areas: ['igi airport', 'dwarka', 'gurugram'],
+            image: 'assets/images/profiles/driver4.jpg'
+        },
+        { 
+            name: 'Vikram S.', 
+            rating: 4.8, 
+            experience: '5 years',
+            location: 'Connaught Place',
+            areas: ['connaught place', 'karol bagh', 'new delhi'],
+            image: 'assets/images/profiles/driver5.jpg'
+        }
     ];
 
-    return drivers.map(driver => `
+    // Filter drivers based on location if provided
+    let relevantDrivers = allDrivers;
+    if (location) {
+        const searchLocation = location.toLowerCase();
+        relevantDrivers = allDrivers.filter(driver => 
+            driver.areas.some(area => searchLocation.includes(area))
+        );
+        
+        // If no specific drivers found, return all drivers
+        if (relevantDrivers.length === 0) {
+            relevantDrivers = allDrivers;
+        }
+    }
+
+    // Take the first 3 drivers
+    const selectedDrivers = relevantDrivers.slice(0, 3);
+
+    return selectedDrivers.map(driver => `
         <div class="driver-card">
+            <img src="${driver.image}" alt="${driver.name}" class="driver-avatar" 
+                 onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(driver.name)}&background=0D47A1&color=fff'">
             <h4>${driver.name}</h4>
             <p>⭐ ${driver.rating}</p>
             <p>Experience: ${driver.experience}</p>
+            <p>Area: ${driver.location}</p>
         </div>
     `).join('');
 }
@@ -359,6 +502,175 @@ function showLocationError(message) {
         errorDiv.textContent = Security.sanitizeInput(message);
         errorDiv.style.display = 'block';
     }
+}
+
+// Location Autocomplete
+function initLocationAutocomplete() {
+    const locationInput = document.getElementById('location');
+    if (!locationInput) return;
+
+    const autocompleteContainer = document.createElement('div');
+    autocompleteContainer.className = 'location-autocomplete';
+    autocompleteContainer.style.display = 'none';
+    locationInput.parentNode.appendChild(autocompleteContainer);
+
+    let debounceTimer;
+    let currentFocus = -1;
+
+    locationInput.addEventListener('input', function() {
+        const query = this.value.trim();
+        
+        // Clear previous timer
+        clearTimeout(debounceTimer);
+        
+        // Hide autocomplete if input is empty
+        if (!query) {
+            autocompleteContainer.style.display = 'none';
+            return;
+        }
+
+        // Debounce the API call
+        debounceTimer = setTimeout(() => {
+            if (!Security.rateLimit.check('geocoding')) {
+                showLocationError('Too many location requests. Please wait a moment.');
+                return;
+            }
+
+            // Add Delhi NCR to the search query
+            const searchQuery = `${query} Delhi NCR`;
+            
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}&limit=5&countrycodes=in`)
+                .then(response => response.json())
+                .then(data => {
+                    // Filter results to prioritize Delhi NCR locations
+                    const delhiNcrTerms = [
+                        'delhi', 'ncr', 'new delhi',
+                        'gurgaon', 'gurugram', 
+                        'noida', 'greater noida',
+                        'ghaziabad', 'faridabad',
+                        'igi airport', 'indira gandhi airport', 'terminal 3', 't3',
+                        'dwarka', 'rohini', 'pitampura', 'janakpuri',
+                        'connaught place', 'cp', 'karol bagh',
+                        'saket', 'lajpat nagar', 'nehru place',
+                        'cyber city', 'cyber hub',
+                        'sector', 'golf course road',
+                        'vaishali', 'indirapuram',
+                        'crossing republik'
+                    ];
+                    
+                    const filteredData = data.filter(place => 
+                        delhiNcrTerms.some(term => 
+                            place.display_name.toLowerCase().includes(term)
+                        )
+                    );
+
+                    if (filteredData.length > 0) {
+                        const suggestions = filteredData.map(place => `
+                            <div class="location-suggestion" data-location="${Security.sanitizeInput(place.display_name)}">
+                                <i class="fas fa-map-marker-alt"></i>
+                                ${Security.sanitizeInput(place.display_name)}
+                            </div>
+                        `).join('');
+                        
+                        autocompleteContainer.innerHTML = suggestions;
+                        autocompleteContainer.style.display = 'block';
+
+                        // Add click handlers to suggestions
+                        document.querySelectorAll('.location-suggestion').forEach(suggestion => {
+                            suggestion.addEventListener('click', function() {
+                                locationInput.value = this.dataset.location;
+                                autocompleteContainer.style.display = 'none';
+                                showNearbyDrivers(this.dataset.location);
+                            });
+                        });
+                    } else {
+                        // Show popular locations when no matches found
+                        autocompleteContainer.innerHTML = `
+                            <div class="location-suggestion">
+                                <i class="fas fa-info-circle"></i>
+                                We serve these popular locations:
+                            </div>
+                            <div class="location-suggestion" data-location="IGI Airport, New Delhi">
+                                <i class="fas fa-plane"></i>
+                                IGI Airport, New Delhi
+                            </div>
+                            <div class="location-suggestion" data-location="Connaught Place, New Delhi">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Connaught Place, New Delhi
+                            </div>
+                            <div class="location-suggestion" data-location="Cyber City, Gurugram">
+                                <i class="fas fa-building"></i>
+                                Cyber City, Gurugram
+                            </div>
+                        `;
+                        autocompleteContainer.style.display = 'block';
+                        
+                        // Add click handlers to suggestions
+                        document.querySelectorAll('.location-suggestion').forEach(suggestion => {
+                            if (suggestion.dataset.location) {
+                                suggestion.addEventListener('click', function() {
+                                    locationInput.value = this.dataset.location;
+                                    autocompleteContainer.style.display = 'none';
+                                    showNearbyDrivers(this.dataset.location);
+                                });
+                            }
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching locations:', error);
+                    autocompleteContainer.style.display = 'none';
+                });
+        }, 300); // Debounce delay of 300ms
+    });
+
+    // Handle keyboard navigation
+    locationInput.addEventListener('keydown', function(e) {
+        const suggestions = document.querySelectorAll('.location-suggestion');
+        
+        if (suggestions.length === 0) return;
+
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            
+            // Update focus
+            if (e.key === 'ArrowDown') {
+                currentFocus = currentFocus < suggestions.length - 1 ? currentFocus + 1 : 0;
+            } else {
+                currentFocus = currentFocus > 0 ? currentFocus - 1 : suggestions.length - 1;
+            }
+
+            // Update visual focus
+            suggestions.forEach((suggestion, index) => {
+                if (index === currentFocus) {
+                    suggestion.classList.add('focused');
+                    suggestion.scrollIntoView({ block: 'nearest' });
+                } else {
+                    suggestion.classList.remove('focused');
+                }
+            });
+        } else if (e.key === 'Enter' && currentFocus !== -1) {
+            e.preventDefault();
+            const focusedSuggestion = document.querySelector('.location-suggestion.focused');
+            if (focusedSuggestion) {
+                locationInput.value = focusedSuggestion.dataset.location;
+                autocompleteContainer.style.display = 'none';
+                showNearbyDrivers(focusedSuggestion.dataset.location);
+                currentFocus = -1;
+            }
+        } else if (e.key === 'Escape') {
+            autocompleteContainer.style.display = 'none';
+            currentFocus = -1;
+        }
+    });
+
+    // Hide autocomplete when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!locationInput.contains(e.target) && !autocompleteContainer.contains(e.target)) {
+            autocompleteContainer.style.display = 'none';
+            currentFocus = -1;
+        }
+    });
 }
 
 // Booking History
@@ -407,50 +719,35 @@ async function handleFormSubmit(event) {
     const formData = new FormData(form);
     
     // Validate form
-    const errors = validateForm(formData);
-    if (errors.length > 0) {
-        errors.forEach(error => showError(error));
+    if (!formData.get('name') || !formData.get('phone') || !formData.get('location') || 
+        !formData.get('serviceType') || !formData.get('bookingDate') || !formData.get('bookingTime')) {
+        showNotification('Please fill in all required fields', 'error');
         return;
     }
     
-    // Prepare booking data
-    const bookingData = {
-        name: formData.get('name'),
-        phone: formData.get('phone'),
-        email: formData.get('email'),
-        service: formData.get('service'),
-        location: formData.get('location'),
-        date: formData.get('date'),
-        time: formData.get('time'),
-        status: 'pending',
-        estimatedFare: document.getElementById('fareEstimate').textContent
-    };
-    
     try {
-        const response = await fetch('/api/bookings', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(bookingData)
-        });
+        // Prepare booking data
+        const bookingData = {
+            id: 'BK' + Date.now().toString().slice(-6),
+            timestamp: new Date().toISOString(),
+            name: formData.get('name'),
+            phone: formData.get('phone'),
+            service: formData.get('serviceType'),
+            hours: formData.get('hours'),
+            location: formData.get('location'),
+            date: formData.get('bookingDate'),
+            time: formData.get('bookingTime'),
+            status: 'pending',
+            estimatedFare: document.getElementById('fareEstimate').textContent
+        };
         
-        if (!response.ok) {
-            throw new Error('Failed to save booking');
-        }
+        // Save to localStorage
+        const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
+        bookings.push(bookingData);
+        localStorage.setItem('bookings', JSON.stringify(bookings));
         
-        const result = await response.json();
         showNotification('Booking submitted successfully! We will contact you shortly.', 'success');
         form.reset();
-        
-        // Save to localStorage as backup
-        const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
-        bookings.push({
-            ...bookingData,
-            id: result.booking.id,
-            timestamp: result.booking.timestamp
-        });
-        localStorage.setItem('bookings', JSON.stringify(bookings));
         
     } catch (error) {
         console.error('Error submitting booking:', error);
@@ -459,20 +756,14 @@ async function handleFormSubmit(event) {
 }
 
 // Notification system
-function showNotification(type, message) {
+function showNotification(message, type) {
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
-    notification.innerHTML = `
-        <i class="fa ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
-        <span>${Security.sanitizeInput(message)}</span>
-    `;
-    
+    notification.textContent = message;
     document.body.appendChild(notification);
     
-    // Remove notification after 5 seconds
     setTimeout(() => {
-        notification.classList.add('fade-out');
-        setTimeout(() => notification.remove(), 300);
+        notification.remove();
     }, 5000);
 }
 
@@ -588,6 +879,9 @@ document.addEventListener('DOMContentLoaded', function() {
             disable: 'mobile'
         });
     }
+
+    // Initialize location autocomplete
+    initLocationAutocomplete();
 });
 
 // Update fare estimate based on service type and hours
