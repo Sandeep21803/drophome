@@ -132,7 +132,7 @@ function calculateFare() {
             if (hours <= 8) {
                 totalFare = 1000;
             } else {
-                totalFare = 1000 + ((hours - 8) * 200); // Additional hours at ₹200/hour
+                totalFare = 1000 + ((hours - 8) * 250); // Additional hours at ₹250/hour
             }
             break;
         
@@ -141,13 +141,13 @@ function calculateFare() {
             if (hours <= 5) {
                 totalFare = 1000;
             } else {
-                totalFare = 1000 + ((hours - 5) * 200);
+                totalFare = 1000 + ((hours - 5) * 250);
             }
             break;
         
         case 'hourly':
-            // Hourly Rate: ₹200 per hour
-            totalFare = hours * 200;
+            // Hourly Rate: ₹250 per hour
+            totalFare = hours * 250;
             break;
         
         case 'night':
@@ -164,7 +164,7 @@ function calculateFare() {
             if (hours <= 12) {
                 totalFare = 1500;
             } else {
-                totalFare = 1500 + ((hours - 12) * 200);
+                totalFare = 1500 + ((hours - 12) * 250);
             }
             break;
         
@@ -185,19 +185,19 @@ function calculateFare() {
             let detailsText = '';
             switch(serviceType) {
                 case 'morning':
-                    detailsText = 'Base rate: ₹1000 for 8 hours\nAdditional hours: ₹200/hour';
+                    detailsText = 'Base rate: ₹1000 for 8 hours\nAdditional hours: ₹250/hour';
                     break;
                 case 'afternoon':
-                    detailsText = 'Base rate: ₹1000 for 5 hours\nAdditional hours: ₹200/hour';
+                    detailsText = 'Base rate: ₹1000 for 5 hours\nAdditional hours: ₹250/hour';
                     break;
                 case 'hourly':
-                    detailsText = 'Standard hourly rate: ₹200/hour';
+                    detailsText = 'Standard hourly rate: ₹250/hour';
                     break;
                 case 'night':
                     detailsText = 'Base rate: ₹750 for 2 hours\nAdditional hours: ₹250/hour';
                     break;
                 case 'tour':
-                    detailsText = 'Base rate: ₹1500 for 12 hours\nAdditional hours: ₹200/hour';
+                    detailsText = 'Base rate: ₹1500 for 12 hours\nAdditional hours: ₹250/hour';
                     break;
                 case 'night_stay':
                     detailsText = 'Night stay rate: ₹250/hour';
@@ -899,7 +899,7 @@ function updateFareEstimate() {
             if (hours <= 8) {
                 totalFare = 1000;
             } else {
-                totalFare = 1000 + ((hours - 8) * 200); // Additional hours at ₹200/hour
+                totalFare = 1000 + ((hours - 8) * 250); // Additional hours at ₹250/hour
             }
             break;
         
@@ -908,13 +908,13 @@ function updateFareEstimate() {
             if (hours <= 5) {
                 totalFare = 1000;
             } else {
-                totalFare = 1000 + ((hours - 5) * 200);
+                totalFare = 1000 + ((hours - 5) * 250);
             }
             break;
         
         case 'hourly':
-            // Hourly Rate: ₹200 per hour
-            totalFare = hours * 200;
+            // Hourly Rate: ₹250 per hour
+            totalFare = hours * 250;
             break;
         
         case 'night':
@@ -931,7 +931,7 @@ function updateFareEstimate() {
             if (hours <= 12) {
                 totalFare = 1500;
             } else {
-                totalFare = 1500 + ((hours - 12) * 200);
+                totalFare = 1500 + ((hours - 12) * 250);
             }
             break;
         
@@ -950,19 +950,19 @@ function updateFareEstimate() {
         let detailsText = '';
         switch(serviceType) {
             case 'morning':
-                detailsText = 'Base rate: ₹1000 for 8 hours\nAdditional hours: ₹200/hour';
+                detailsText = 'Base rate: ₹1000 for 8 hours\nAdditional hours: ₹250/hour';
                 break;
             case 'afternoon':
-                detailsText = 'Base rate: ₹1000 for 5 hours\nAdditional hours: ₹200/hour';
+                detailsText = 'Base rate: ₹1000 for 5 hours\nAdditional hours: ₹250/hour';
                 break;
             case 'hourly':
-                detailsText = 'Standard hourly rate: ₹200/hour';
+                detailsText = 'Standard hourly rate: ₹250/hour';
                 break;
             case 'night':
                 detailsText = 'Base rate: ₹750 for 2 hours\nAdditional hours: ₹250/hour';
                 break;
             case 'tour':
-                detailsText = 'Base rate: ₹1500 for 12 hours\nAdditional hours: ₹200/hour';
+                detailsText = 'Base rate: ₹1500 for 12 hours\nAdditional hours: ₹250/hour';
                 break;
             case 'night_stay':
                 detailsText = 'Night stay rate: ₹250/hour';
