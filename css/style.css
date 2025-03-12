@@ -1,41 +1,102 @@
 @import url("https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css");
 @import url('https://fonts.googleapis.com/css2?family=Baloo+Tammudu+2:wght@500&display=swap');
 
+/* Root Variables */
+:root {
+    /* Colors */
+    --primary: #2563EB;
+    --secondary: #1E40AF;
+    --accent: #60A5FA;
+    --success: #059669;
+    --warning: #F59E0B;
+    --error: #DC2626;
+    
+    /* Neutral Colors */
+    --white: #FFFFFF;
+    --black: #000000;
+    --gray-50: #F9FAFB;
+    --gray-100: #F3F4F6;
+    --gray-200: #E5E7EB;
+    --gray-300: #D1D5DB;
+    --gray-400: #9CA3AF;
+    --gray-500: #6B7280;
+    --gray-600: #4B5563;
+    --gray-700: #374151;
+    --gray-800: #1F2937;
+    --gray-900: #111827;
+    
+    /* Text Colors */
+    --text-dark: var(--gray-800);
+    --text-light: var(--gray-600);
+    --text-muted: var(--gray-400);
+    
+    /* Background Colors */
+    --bg-primary: var(--white);
+    --bg-secondary: var(--gray-50);
+    --bg-accent: var(--gray-100);
+    
+    /* Border Colors */
+    --border-light: var(--gray-200);
+    --border-medium: var(--gray-300);
+    --border-dark: var(--gray-400);
+    
+    /* Shadow Values */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    
+    /* Border Radius */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
+    --radius-full: 9999px;
+    
+    /* Transitions */
+    --transition-fast: 150ms ease;
+    --transition-normal: 300ms ease;
+    --transition-slow: 500ms ease;
+    
+    /* Z-index layers */
+    --z-negative: -1;
+    --z-elevate: 1;
+    --z-dropdown: 10;
+    --z-sticky: 100;
+    --z-drawer: 200;
+    --z-modal: 300;
+    --z-popover: 400;
+    --z-toast: 500;
+}
+
+/* Base Styles */
 * {
-    padding: 0;
     margin: 0;
+    padding: 0;
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 html {
     scroll-behavior: smooth;
+    font-size: 16px;
+    line-height: 1.5;
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: var(--white);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: var(--bg-primary);
     color: var(--text-dark);
-    line-height: 1.6;
-}
-
-:root {
-    --primary: #2563EB;
-    --secondary: #1E40AF;
-    --accent: #60A5FA;
-    --white: #FFFFFF;
-    --light-gray: #F3F4F6;
-    --text-dark: #1F2937;
-    --text-light: #4B5563;
-    --success: #059669;
-    --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    --hover-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    --primary-color: #2c3e50;
-    --secondary-color: #3498db;
-    --accent-color: #e74c3c;
-    --text-color: #333;
-    --border-color: #ddd;
+    min-height: 100vh;
 }
 
 #navbar {
@@ -83,7 +144,7 @@ body {
 
 .logo-container:hover {
     transform: scale(1.05);
-    box-shadow: var(--hover-shadow);
+    box-shadow: var(--shadow-xl);
 }
 
 .nav-logo {
@@ -135,7 +196,7 @@ body {
 
 .nav-link:hover {
     color: var(--primary);
-    background: var(--light-gray);
+    background: var(--bg-accent);
 }
 
 .nav-link i {
@@ -247,7 +308,7 @@ body {
     background: var(--white);
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: var(--card-shadow);
+    box-shadow: var(--shadow-lg);
     transition: all 0.3s ease;
     text-decoration: none;
     position: relative;
@@ -255,7 +316,7 @@ body {
 
 .grid-item:hover {
     transform: translateY(-10px);
-    box-shadow: var(--hover-shadow);
+    box-shadow: var(--shadow-xl);
 }
 
 .grid-item::after {
@@ -649,7 +710,7 @@ footer {
 
 .features-section {
     padding: 4rem 2rem;
-    background: var(--light-gray);
+    background: var(--bg-accent);
 }
 
 .features-grid {
@@ -665,14 +726,14 @@ footer {
     padding: 2.5rem;
     background: var(--white);
     border-radius: 16px;
-    box-shadow: var(--card-shadow);
+    box-shadow: var(--shadow-lg);
     transition: all 0.3s ease;
     border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .feature-item:hover {
     transform: translateY(-10px);
-    box-shadow: var(--hover-shadow);
+    box-shadow: var(--shadow-xl);
     border-color: var(--accent);
 }
 
@@ -699,7 +760,7 @@ footer {
 
 .contact-section {
     padding: 4rem 2rem;
-    background: var(--light-gray);
+    background: var(--bg-accent);
 }
 
 .contact-container {
@@ -711,7 +772,7 @@ footer {
     background: var(--white);
     padding: 2.5rem;
     border-radius: 16px;
-    box-shadow: var(--card-shadow);
+    box-shadow: var(--shadow-lg);
     transition: all 0.3s ease;
     border: 1px solid rgba(0, 0, 0, 0.05);
 }
@@ -767,7 +828,7 @@ footer {
 
 .contact-link:hover {
     color: var(--primary);
-    background: var(--light-gray);
+    background: var(--bg-accent);
     transform: translateX(5px);
 }
 
@@ -1042,7 +1103,7 @@ button {
 .form-group label {
     display: block;
     margin-bottom: 0.5rem;
-    color: var(--text-primary);
+    color: var(--text-dark);
     font-weight: 500;
 }
 
@@ -1141,7 +1202,7 @@ button {
 
 .testimonial p {
     font-style: italic;
-    color: var(--text-primary);
+    color: var(--text-dark);
     margin-bottom: 1rem;
 }
 
@@ -1297,7 +1358,7 @@ button {
 }
 
 .btn-secondary {
-    background: var(--light-gray);
+    background: var(--bg-accent);
     color: var(--text-dark);
     border: 1px solid #e2e8f0;
     padding: 0.75rem 1rem;
@@ -1407,7 +1468,7 @@ button {
 }
 
 .contact-item:hover {
-    background: var(--light-gray);
+    background: var(--bg-accent);
     transform: translateX(5px);
 }
 
@@ -1725,7 +1786,7 @@ button {
 input, select {
     width: 100%;
     padding: 12px;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--border-light);
     border-radius: 4px;
     font-size: 16px;
     transition: border-color 0.3s ease;
@@ -1733,14 +1794,14 @@ input, select {
 
 input:focus, select:focus {
     outline: none;
-    border-color: var(--secondary-color);
+    border-color: var(--secondary);
 }
 
 /* Buttons */
 .btn {
     display: inline-block;
     padding: 12px 24px;
-    background: var(--secondary-color);
+    background: var(--secondary);
     color: white;
     border: none;
     border-radius: 4px;
@@ -1754,8 +1815,8 @@ input:focus, select:focus {
 }
 
 .btn-secondary {
-    background: var(--light-gray);
-    color: var(--text-color);
+    background: var(--bg-accent);
+    color: var(--text-dark);
 }
 
 .btn-secondary:hover {
@@ -1768,7 +1829,7 @@ input:focus, select:focus {
 
 /* Fare Estimate Card */
 .fare-estimate {
-    background: var(--light-gray);
+    background: var(--bg-accent);
     padding: 20px;
     border-radius: 8px;
     margin: 20px 0;
@@ -1780,13 +1841,13 @@ input:focus, select:focus {
 
 .fare-card h3 {
     margin-bottom: 10px;
-    color: var(--primary-color);
+    color: var(--primary);
 }
 
 #fareEstimate {
     font-size: 32px;
     font-weight: bold;
-    color: var(--accent-color);
+    color: var(--accent);
     margin: 10px 0;
 }
 
@@ -1807,7 +1868,7 @@ input:focus, select:focus {
 
 .testimonial {
     padding: 15px;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-light);
 }
 
 .testimonial:last-child {
@@ -1840,7 +1901,7 @@ input:focus, select:focus {
 
 .booking-item {
     padding: 15px;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-light);
 }
 
 .booking-item:last-child {
@@ -1848,7 +1909,7 @@ input:focus, select:focus {
 }
 
 .booking-item h3 {
-    color: var(--primary-color);
+    color: var(--primary);
     margin-bottom: 5px;
 }
 
@@ -1885,7 +1946,7 @@ input:focus, select:focus {
 .mobile-menu-toggle span {
     width: 100%;
     height: 3px;
-    background-color: var(--primary-color);
+    background-color: var(--primary);
     transition: all 0.3s ease;
 }
 
@@ -1912,7 +1973,7 @@ input:focus, select:focus {
 .feature-icon {
     width: 48px;
     height: 48px;
-    color: var(--primary-color);
+    color: var(--primary);
     margin-bottom: 1rem;
     transition: transform 0.3s ease;
 }
@@ -1964,7 +2025,7 @@ input:focus, select:focus {
 .mobile-menu-toggle span {
     width: 100%;
     height: 3px;
-    background-color: var(--primary-color);
+    background-color: var(--primary);
     transition: all 0.3s ease;
 }
 
@@ -2111,7 +2172,7 @@ input:focus, select:focus {
 
 .location-suggestion:hover,
 .location-suggestion.focused {
-    background: var(--light-gray);
+    background: var(--bg-accent);
 }
 
 .location-suggestion:not(:last-child) {
@@ -2132,5 +2193,73 @@ input:focus, select:focus {
     .location-suggestion {
         padding: 10px 12px;
         font-size: 0.95rem;
+    }
+}
+
+.coverage-section {
+    margin-top: 60px;
+    padding: 40px 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+}
+
+.coverage-title {
+    text-align: center;
+    color: #0D47A1;
+    margin-bottom: 30px;
+    font-size: 1.8rem;
+}
+
+.coverage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.coverage-area {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.coverage-area:hover {
+    transform: translateY(-5px);
+}
+
+.coverage-area h4 {
+    color: #0D47A1;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.coverage-area h4 i {
+    color: #1976D2;
+}
+
+.coverage-area p {
+    color: #666;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .coverage-section {
+        margin-top: 40px;
+        padding: 20px 15px;
+    }
+
+    .coverage-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .coverage-area {
+        padding: 15px;
     }
 }

@@ -371,18 +371,115 @@ function showNearbyDrivers(location) {
         
         // Check if location contains Delhi NCR related terms
         const delhiNcrTerms = [
-            'delhi', 'ncr', 'new delhi',
-            'gurgaon', 'gurugram', 
-            'noida', 'greater noida',
-            'ghaziabad', 'faridabad',
-            'igi airport', 'indira gandhi airport', 'terminal 3', 't3',
-            'dwarka', 'rohini', 'pitampura', 'janakpuri',
-            'connaught place', 'cp', 'karol bagh',
-            'saket', 'lajpat nagar', 'nehru place',
-            'cyber city', 'cyber hub',
-            'sector', 'golf course road',
-            'vaishali', 'indirapuram',
-            'crossing republik'
+            // Central & South Delhi Premium Areas
+            'delhi', 'new delhi', 'south delhi', 'lutyens delhi', 'diplomatic enclave',
+            'golf links', 'jor bagh', 'sundar nagar', 'amrita shergill marg', 'prithviraj road',
+            'aurangzeb road', 'shanti path', 'vasant vihar', 'west end', 'anand niketan',
+            'greater kailash', 'gk-1', 'gk-2', 'defence colony', 'maharani bagh',
+            'panchsheel park', 'hauz khas', 'safdarjung enclave', 'vasant kunj',
+            'new friends colony', 'south extension', 'andrews ganj', 'gulmohar park',
+            'neeti bagh', 'shanti niketan', 'westend', 'satya niketan', 'sarita vihar',
+            'alaknanda', 'cr park', 'chittaranjan park', 'east of kailash', 'kailash colony',
+            'malviya nagar', 'sarvapriya vihar', 'sarvodaya enclave', 'green park',
+            'uday park', 'masjid moth', 'khel gaon', 'asiad village', 'siri fort',
+            'anand lok', 'gulmohar park', 'gautam nagar', 'jangpura', 'jangpura extension',
+            'bhogal', 'nizamuddin east', 'nizamuddin west', 'sunder nagar', 'pandara road',
+            'khan market', 'lodhi colony', 'lodhi road', 'golf links', 'bharti nagar',
+
+            // West & North Delhi Areas
+            'rajouri garden', 'punjabi bagh', 'paschim vihar', 'kirti nagar', 'moti nagar',
+            'model town', 'gujranwala town', 'hudson lines', 'mukherjee nagar', 'civil lines',
+            'kamla nagar', 'shakti nagar', 'roop nagar', 'vijay nagar', 'ashok vihar',
+            'shalimar bagh', 'pitampura', 'prashant vihar', 'rohini sector 3', 'rohini sector 7',
+            'rohini sector 8', 'rohini sector 9', 'rohini sector 13', 'rohini sector 14',
+            'paschim puri', 'jwala heri', 'vikaspuri', 'uttam nagar', 'dwarka sector 2',
+            'dwarka sector 4', 'dwarka sector 6', 'dwarka sector 7', 'dwarka sector 9',
+            'dwarka sector 10', 'dwarka sector 11', 'dwarka sector 12', 'dwarka sector 13',
+            'dwarka sector 14', 'dwarka sector 19', 'dwarka sector 22', 'dwarka sector 23',
+
+            // East Delhi Areas
+            'mayur vihar phase 1', 'mayur vihar phase 2', 'mayur vihar phase 3',
+            'patparganj', 'preet vihar', 'nirman vihar', 'laxmi nagar', 'shakarpur',
+            'pandav nagar', 'mother dairy', 'mandawali', 'ip extension', 'surajmal vihar',
+            'vivek vihar', 'dilshad garden', 'jhilmil colony', 'vishwas nagar', 'shahdara',
+            'geeta colony', 'gandhi nagar', 'karkardooma', 'anand vihar', 'vaishali',
+            'yamuna vihar', 'bhajanpura', 'maujpur', 'gokulpuri', 'krishna nagar',
+
+            // Premium Gurgaon Areas
+            'gurgaon', 'gurugram', 'dlf city', 'dlf phase 1', 'dlf phase 2', 'dlf phase 3',
+            'dlf phase 4', 'dlf phase 5', 'golf course road', 'golf course extension',
+            'magnolias', 'the camellias', 'the aralias', 'palm springs', 'beverly park',
+            'cyber city', 'cyber hub', 'ambience island', 'udyog vihar', 'sushant lok',
+            'nirvana country', 'central park', 'emaar mgf palm drive', 'palm springs',
+            'sector 42', 'sector 43', 'sector 27', 'sector 28', 'sector 54', 'sector 55',
+            'sector 56', 'sector 57', 'sector 58', 'sector 59', 'sector 60', 'ardee city',
+            'south city 1', 'south city 2', 'suncity', 'vipul world', 'malibu town',
+            'uniworld gardens', 'vatika city', 'vatika india next', 'uppal southend',
+            'sector 45', 'sector 46', 'sector 47', 'sector 50', 'sector 51', 'sector 52',
+            'mg road', 'sohna road', 'golf course extension road', 'subhash chowk',
+            'rajiv chowk', 'iffco chowk', 'signature tower', 'huda city centre',
+
+            // Premium Noida Areas
+            'noida', 'greater noida', 'noida expressway', 'sector 15a', 'sector 16a',
+            'sector 26', 'sector 27', 'sector 28', 'sector 29', 'sector 30', 'sector 31',
+            'sector 32', 'sector 39', 'sector 44', 'sector 45', 'sector 47', 'sector 50',
+            'sector 93', 'sector 94', 'sector 125', 'sector 128', 'sector 131', 'sector 137',
+            'jaypee greens', 'wish town', 'sector alpha', 'delta', 'gamma', 'film city',
+            'sector 61', 'sector 62', 'sector 63', 'sector 64', 'sector 65', 'sector 66',
+            'sector 67', 'sector 68', 'sector 70', 'sector 71', 'sector 72', 'sector 73',
+            'sector 74', 'sector 75', 'sector 76', 'sector 77', 'sector 78', 'sector 79',
+            'sector 82', 'sector 83', 'sector 84', 'sector 85', 'sector 86', 'sector 87',
+            'sector 88', 'sector 89', 'sector 90', 'sector 91', 'sector 92', 'sector 93',
+            'sector 100', 'sector 104', 'sector 105', 'sector 106', 'sector 107',
+            'botanical garden', 'golf course', 'wave city center', 'logix city center',
+            'dlf mall of india', 'great india place', 'worlds of wonder',
+
+            // Greater Noida Areas
+            'alpha 1', 'alpha 2', 'beta 1', 'beta 2', 'gamma 1', 'gamma 2', 'delta 1',
+            'delta 2', 'delta 3', 'knowledge park 1', 'knowledge park 2', 'knowledge park 3',
+            'knowledge park 4', 'knowledge park 5', 'chi phi', 'omicron', 'xu', 'zeta',
+            'pari chowk', 'gaur city 1', 'gaur city 2', 'tech zone', 'greater noida west',
+            'noida extension', 'yamuna expressway', 'yeida', 'jaypee sports city',
+
+            // Premium Faridabad Areas
+            'faridabad', 'greenfields colony', 'sector 14', 'sector 15', 'sector 16',
+            'sector 17', 'sector 21a', 'sector 21b', 'sector 21c', 'sector 21d',
+            'surajkund', 'sainik colony', 'charmwood village', 'sector 28', 'sector 29',
+            'sector 30', 'sector 31', 'sector 37', 'sector 46', 'sector 48', 'sector 49',
+            'sector 75', 'sector 76', 'sector 77', 'sector 78', 'sector 79', 'sector 80',
+            'sector 81', 'sector 82', 'sector 83', 'sector 84', 'sector 85', 'sector 86',
+            'sector 87', 'sector 88', 'neharpar', 'greater faridabad',
+
+            // Premium Ghaziabad Areas
+            'ghaziabad', 'raj nagar extension', 'kavi nagar', 'vaishali', 'indirapuram',
+            'crossings republik', 'ahinsa khand', 'shakti khand', 'niti khand',
+            'raj nagar', 'govindpuram', 'shastri nagar', 'nehru nagar', 'shalimar garden',
+            'surya nagar', 'kaushambi', 'vasundhara sector 1', 'vasundhara sector 2',
+            'vasundhara sector 3', 'vasundhara sector 4', 'vasundhara sector 5',
+            'vasundhara sector 13', 'vasundhara sector 16', 'sahibabad', 'mohan nagar',
+            'pratap vihar', 'delta colonies', 'brij vihar', 'ramprastha', 'pacific mall',
+            'mahagun mall', 'gaur central mall',
+
+            // Airport & Transport Hubs
+            'igi airport', 'indira gandhi airport', 'terminal 3', 't3', 'terminal 2', 't2',
+            'terminal 1', 't1', 'domestic airport', 'cargo terminal', 'aerocity',
+            'worldmark aerocity', 'holiday inn aerocity', 'pullman aerocity',
+            'anand vihar isbt', 'kashmere gate isbt', 'sarai kale khan isbt',
+            'new delhi railway station', 'old delhi railway station', 'hazrat nizamuddin railway station',
+            'delhi cantt railway station', 'ghaziabad railway station', 'noida city center',
+            'botanical garden metro', 'huda city centre metro', 'mg road metro',
+            'rajiv chowk metro', 'kashmere gate metro', 'welcome metro',
+
+            // Business & Shopping Districts
+            'nehru place', 'bhikaji cama place', 'jasola', 'aerocity', 'india gate',
+            'pragati maidan', 'ito', 'barakhamba road', 'okhla industrial area',
+            'naraina industrial area', 'wazirpur industrial area', 'saket mall',
+            'dlf promenade', 'dlf emporio', 'the chanakya', 'select citywalk',
+            'ambience mall', 'pacific mall', 'vegas mall', 'v3s mall', 'cross river mall',
+            'east delhi mall', 'unity one mall', 'metro walk mall', 'city centre mall',
+            'gaur central mall', 'logix city centre', 'dlf mall of india', 'great india place',
+            'ansal plaza', 'v3s mall', 'shipra mall', 'mahagun metro mall', 'opulent mall',
+            'pacific mall', 'gaur city mall', 'star city mall', 'wave mall'
         ];
         
         const isNearDelhiNcr = delhiNcrTerms.some(term => 
@@ -543,21 +640,6 @@ function initLocationAutocomplete() {
                 .then(response => response.json())
                 .then(data => {
                     // Filter results to prioritize Delhi NCR locations
-                    const delhiNcrTerms = [
-                        'delhi', 'ncr', 'new delhi',
-                        'gurgaon', 'gurugram', 
-                        'noida', 'greater noida',
-                        'ghaziabad', 'faridabad',
-                        'igi airport', 'indira gandhi airport', 'terminal 3', 't3',
-                        'dwarka', 'rohini', 'pitampura', 'janakpuri',
-                        'connaught place', 'cp', 'karol bagh',
-                        'saket', 'lajpat nagar', 'nehru place',
-                        'cyber city', 'cyber hub',
-                        'sector', 'golf course road',
-                        'vaishali', 'indirapuram',
-                        'crossing republik'
-                    ];
-                    
                     const filteredData = data.filter(place => 
                         delhiNcrTerms.some(term => 
                             place.display_name.toLowerCase().includes(term)

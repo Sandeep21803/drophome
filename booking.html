@@ -36,12 +36,12 @@
                 <a href="index.html" class="brand-name">Top<span>Driver</span>Service</a>
             </div>
             <!-- Mobile Menu Toggle -->
-            <button class="mobile-menu-toggle" aria-label="Toggle Menu">
+            <button class="mobile-menu-toggle" aria-label="Toggle Menu" aria-expanded="false">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
-            <ul class="nav-list">
+            <ul class="nav-list" id="navList">
                 <li><a class="nav-link" href="index.html">Home</a></li>
                 <li><a class="nav-link" href="index.html#services">Services</a></li>
                 <li><a class="nav-link" href="index.html#pricing">Pricing</a></li>
@@ -65,20 +65,35 @@
                 <div class="booking-form-container" data-aos="fade-right">
                     <div class="form-card">
                         <h2 class="form-title"><i class="fas fa-user-circle"></i> Personal Details</h2>
-                        <form id="bookingForm">
+                        <form id="bookingForm" novalidate>
                             <div class="form-group">
                                 <label for="name"><i class="fas fa-user"></i> Full Name</label>
-                                <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                                <input type="text" id="name" name="name" 
+                                       placeholder="Enter your full name" 
+                                       required
+                                       pattern="[A-Za-z ]{2,50}"
+                                       aria-describedby="nameError">
+                                <div id="nameError" class="error-message" role="alert"></div>
                             </div>
                             
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="phone"><i class="fa-solid fa-phone"></i> Phone Number</label>
-                                    <input type="tel" id="phone" name="phone" placeholder="Your phone number" required>
+                                    <input type="tel" id="phone" name="phone" 
+                                           placeholder="Your phone number" 
+                                           required
+                                           pattern="[0-9]{10}"
+                                           aria-describedby="phoneError">
+                                    <div id="phoneError" class="error-message" role="alert"></div>
                                 </div>
                                 <div class="form-group">
                                     <label for="email"><i class="fas fa-envelope"></i> Email</label>
-                                    <input type="email" id="email" name="email" placeholder="Your email address" required>
+                                    <input type="email" id="email" name="email" 
+                                           placeholder="Your email address" 
+                                           required
+                                           pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                                           aria-describedby="emailError">
+                                    <div id="emailError" class="error-message" role="alert"></div>
                                 </div>
                             </div>
 
@@ -125,10 +140,32 @@
                             <div class="form-group">
                                 <label for="location"><i class="fas fa-map-marker-alt"></i> Pickup Location</label>
                                 <div class="location-input-group">
-                                    <input type="text" id="location" name="location" placeholder="Enter your pickup location" required>
-                                    <button type="button" id="getLocation" class="btn btn-secondary">
+                                    <input type="text" id="location" name="location" 
+                                           placeholder="Enter your pickup location (e.g., Connaught Place, IGI Airport)" 
+                                           required
+                                           aria-describedby="locationError">
+                                    <button type="button" id="getLocation" class="btn btn-secondary" 
+                                            aria-label="Use Current Location">
                                         <i class="fas fa-crosshairs"></i> Use Current Location
                                     </button>
+                                </div>
+                                <div id="locationError" class="error-message" role="alert"></div>
+                                <div class="popular-locations">
+                                    <p class="location-hint">Popular pickup points:</p>
+                                    <div class="location-tags">
+                                        <span class="location-tag" onclick="document.getElementById('location').value='IGI Airport Terminal 3, New Delhi'">
+                                            <i class="fas fa-plane"></i> IGI T3
+                                        </span>
+                                        <span class="location-tag" onclick="document.getElementById('location').value='Cyber City, Gurugram'">
+                                            <i class="fas fa-building"></i> Cyber City
+                                        </span>
+                                        <span class="location-tag" onclick="document.getElementById('location').value='Connaught Place, New Delhi'">
+                                            <i class="fas fa-map-marker-alt"></i> CP
+                                        </span>
+                                        <span class="location-tag" onclick="document.getElementById('location').value='Sector 18, Noida'">
+                                            <i class="fas fa-shopping-bag"></i> Noida Sec-18
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -217,15 +254,47 @@
 
     <script>
         window.onload = () => {
+            // Initialize AOS
             AOS.init({
                 duration: 800,
                 easing: 'ease-out-cubic',
                 once: true,
                 offset: 50,
-                delay: 0,
-                mirror: false,
-                anchorPlacement: 'top-bottom',
                 disable: 'mobile'
+            });
+
+            // Mobile menu toggle
+            const menuToggle = document.querySelector('.mobile-menu-toggle');
+            const navList = document.getElementById('navList');
+            
+            menuToggle.addEventListener('click', () => {
+                const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+                menuToggle.setAttribute('aria-expanded', !isExpanded);
+                menuToggle.classList.toggle('active');
+                navList.classList.toggle('active');
+                
+                // Prevent body scroll when menu is open
+                document.body.style.overflow = isExpanded ? 'auto' : 'hidden';
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!menuToggle.contains(e.target) && !navList.contains(e.target)) {
+                    menuToggle.setAttribute('aria-expanded', 'false');
+                    menuToggle.classList.remove('active');
+                    navList.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            // Close menu when clicking on a link
+            navList.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    menuToggle.setAttribute('aria-expanded', 'false');
+                    menuToggle.classList.remove('active');
+                    navList.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                });
             });
         }
     </script>
